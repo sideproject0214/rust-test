@@ -1,0 +1,45 @@
+[package]
+name = "axum_ssr_try"
+version = "0.1.0"
+edition = "2021"
+
+# Defines two binary targets for the package
+[[bin]]
+name = "ssr_hydrate"
+required-features = ["hydration"]
+
+[[bin]]
+name = "ssr_server"
+required-features = ["ssr"]
+
+
+[dependencies]
+yew = "0.21.0"
+reqwest = { version = "0.11.8", features = ["json"] }
+futures = "0.3"
+serde = { version = "1.0.190", features = ["derive"] }
+bytes = "1.0"
+uuid = { version = "1.5.0", features = ["serde"] }
+tower = "0.4.13"
+tower-http = { version = "0.5.0", features = ["full"] }
+# Dependencies only u1.34.0r the wasm32 target
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# This crate bridges the gap between a Rust Future and a JavaScript Promise. It provides two conversions
+wasm-bindgen-futures = "0.4"
+# A logger that sends a message with its Rust source's line and filename to the browser console.
+wasm-logger = "0.2"
+# The log crate provides a single logging API that abstracts over the actual logging implementation
+log = "0.4"
+
+
+# Dependencies only used for non-wasm32 targets
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1.34.0", features = ["full"] }
+axum = "0.6.20"
+# Command Line Argument Parser for Rust
+clap = { version = "4.4.8", features = ["derive"] }
+
+# Optional features of the package
+[features]
+hydration = ["yew/hydration"]
+ssr = ["yew/ssr"]
